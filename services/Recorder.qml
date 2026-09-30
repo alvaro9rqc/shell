@@ -58,7 +58,11 @@ Singleton {
                 commandProc.exec(["caelestia", "record", "-p"]);
                 props.paused = !props.paused;
             } else if (!running && root.needsStart) {
-                commandProc.exec(["caelestia", "record", ...root.startArgs]);
+                // TEMPORARY WORKAROUND for PR #1827 / SIGPIPE bug on screen recording:
+                // When commandProc closes standard I/O pipes after `caelestia record` exits,
+                // gpu-screen-recorder inherits the closed pipes and gets killed by SIGPIPE (exit code 141).
+                // NOTE: This workaround should be removed once upstream properly detaches stdio in caelestia-shell or caelestia-cli.
+                commandProc.exec(["sh", "-c", 'exec caelestia record "$@" </dev/null >/dev/null 2>/dev/null', "_", ...root.startArgs]);
                 props.running = true;
                 props.paused = false;
                 props.elapsed = 0;
