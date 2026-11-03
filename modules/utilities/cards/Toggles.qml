@@ -12,6 +12,7 @@ import qs.components.controls
 import qs.services
 import qs.modules.nexus
 import qs.modules.bar.popouts as BarPopouts
+import qs.custom
 
 StyledRect {
     id: root
@@ -22,7 +23,7 @@ StyledRect {
     readonly property var quickToggles: {
         const seenIds = new Set();
 
-        return Config.utilities.quickToggles.values.filter(item => {
+        const list = Config.utilities.quickToggles.values.filter(item => {
             if (!item.enabled || seenIds.has(item.id))
                 return false;
 
@@ -34,6 +35,9 @@ StyledRect {
             seenIds.add(item.id);
             return true;
         });
+
+        list.push({ id: "serverMode", enabled: true });
+        return list;
     }
     readonly property int splitIndex: Math.ceil(quickToggles.length / 2)
     readonly property bool needExtraRow: quickToggles.length > 6
@@ -127,6 +131,14 @@ StyledRect {
                         icon: "gamepad"
                         checked: RuntimeState.gameMode
                         onClicked: RuntimeState.gameMode = !RuntimeState.gameMode
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "serverMode"
+                    delegate: Toggle {
+                        icon: "dns"
+                        checked: ServerMode.active
+                        onClicked: ServerMode.toggle()
                     }
                 }
                 DelegateChoice {

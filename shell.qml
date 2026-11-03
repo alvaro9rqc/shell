@@ -13,6 +13,7 @@ import qs.modules.background
 import qs.modules.drawers
 import qs.modules.lock
 import qs.daemons
+import qs.custom
 
 ShellRoot {
     id: root
@@ -25,6 +26,7 @@ ShellRoot {
         Players;
         Brightness;
         Weather.reload();
+        ServerMode;
 
         if (GlobalConfig.utilities.vpn.enabled)
             VPN;
