@@ -14,10 +14,10 @@ import qs.utils
 Item {
     id: root
 
-    required property int modelData
+    required property var modelData
     required property int index
-    required property int activeWsId
-    required property int ws
+    required property var activeWsId
+    required property var ws
     required property HyprlandMonitor monitor
 
     required property int displayType
@@ -128,7 +128,7 @@ Item {
                 if (label)
                     return label;
 
-                const ws = Hypr.workspaces.values.find(w => w.id === root.ws);
+                const ws = Hypr.workspaces.values.find(w => w.id === root.ws || w.name === root.ws);
                 const wsName = !ws || ws.name == root.ws ? root.ws : Hypr.trimWsName(ws.name)[0];
 
                 const capitalisation = Config.bar.workspaces.capitalisation;
@@ -252,7 +252,7 @@ Item {
 
         property string name
         readonly property string icon: Icons.matchIconRuleList(Hypr.trimWsName(name), root.iconRules)
-        readonly property HyprlandWorkspace wsObj: Hypr.workspaces.values.find(w => w.id === root.ws) ?? null
+        readonly property HyprlandWorkspace wsObj: Hypr.workspaces.values.find(w => w.id === root.ws || w.name === root.ws) ?? null
 
         readonly property Connections conn: Connections {
             function onNameChanged(): void {
