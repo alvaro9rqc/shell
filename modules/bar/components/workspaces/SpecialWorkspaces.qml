@@ -15,12 +15,12 @@ Item {
 
     required property HyprlandMonitor monitor
 
-    readonly property int activeSpecialId: monitor?.lastIpcObject.specialWorkspace?.id ?? 0
+    readonly property var activeSpecialWs: monitor?.lastIpcObject.specialWorkspace?.name ?? ""
     readonly property var wsIds: {
         const allMonitors = !Config.bar.workspaces.perMonitor;
-        return Hypr.workspaces.values.filter(w => w.name.startsWith("special:") && (allMonitors || w.monitor === root.monitor)).map(w => w.id);
+        return Hypr.workspaces.values.filter(w => w.name.startsWith("special:") && (allMonitors || w.monitor === root.monitor)).map(w => w.name);
     }
-    readonly property int activeIdx: wsIds.indexOf(activeSpecialId)
+    readonly property int activeIdx: wsIds.indexOf(activeSpecialWs)
     readonly property real maxViewY: Math.max(0, view.contentHeight - height)
 
     readonly property Workspace activeWs: {
@@ -162,7 +162,7 @@ Item {
         }
 
         delegate: Workspace {
-            activeWsId: root.activeSpecialId
+            activeWsId: root.activeSpecialWs
             ws: modelData
             monitor: root.monitor
             offMonitorColour: Colours.palette.m3outline
@@ -223,7 +223,7 @@ Item {
 
             const ws = view.itemAt(event.x, event.y - view.y) as Workspace;
             if (ws) {
-                const match = Hypr.workspaces.values.find(w => w.id === ws.ws);
+                const match = Hypr.workspaces.values.find(w => w.name === ws.ws || w.id === ws.ws);
                 if (match)
                     Hypr.toggleSpecial(Hypr.trimWsName(match.name));
             } else {
