@@ -8,6 +8,7 @@ import qs.components
 import qs.services
 import qs.utils
 import qs.modules.bar.components.status
+import qs.custom
 
 StyledRect {
     id: root
@@ -56,6 +57,33 @@ StyledRect {
         anchors.bottomMargin: Tokens.padding.medium
 
         spacing: 0
+
+        Item {
+            id: serverModeIndicator
+            visible: ServerMode.active
+            Layout.alignment: Qt.AlignHCenter
+            Layout.topMargin: ServerMode.active ? root.spacing / 2 : 0
+            Layout.bottomMargin: ServerMode.active ? root.spacing / 2 : 0
+
+            implicitWidth: serverIcon.implicitWidth
+            implicitHeight: ServerMode.active ? serverIcon.implicitHeight : 0
+
+            MaterialIcon {
+                id: serverIcon
+                anchors.centerIn: parent
+                text: "dns"
+                color: root.colour
+                fontStyle: Tokens.font.icon.medium
+                fill: 1
+                animate: true
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: ServerMode.toggle()
+            }
+        }
 
         Repeater {
             model: ScriptModel {
